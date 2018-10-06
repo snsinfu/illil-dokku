@@ -1,0 +1,15 @@
+- name: restart ipv4_firewall
+  service:
+    name: ipv4_firewall
+    state: restarted
+
+- name: restart ipv6_firewall
+  service:
+    name: ipv6_firewall
+    state: restarted
+
+# Docker daemon injects its own forwarding rules to iptables.
+- name: restart docker
+  service:
+    name: docker
+    state: restarted

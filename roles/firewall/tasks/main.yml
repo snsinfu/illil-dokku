@@ -1,0 +1,42 @@
+# IPv4
+
+- name: ipv4_firewall service is installed
+  copy:
+    src: config/ipv4_firewall.service
+    dest: /etc/systemd/system/
+
+- name: ipv4_firewall script is installed
+  template:
+    src: config/ipv4_firewall.sh.j2
+    dest: /etc/ipv4_firewall.sh
+    mode: 0744
+  notify:
+    - restart ipv4_firewall
+    - restart docker
+
+- name: ipv4_firewall is activated
+  service:
+    name: ipv4_firewall
+    state: started
+    enabled: yes
+
+# IPv6
+
+- name: ipv6_firewall service is installed
+  copy:
+    src: config/ipv6_firewall.service
+    dest: /etc/systemd/system/
+
+- name: ipv6_firewall script is installed
+  template:
+    src: config/ipv6_firewall.sh.j2
+    dest: /etc/ipv6_firewall.sh
+    mode: 0744
+  notify:
+    - restart ipv6_firewall
+
+- name: ipv6_firewall is activated
+  service:
+    name: ipv6_firewall
+    state: started
+    enabled: yes

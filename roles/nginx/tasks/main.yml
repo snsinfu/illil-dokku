@@ -1,0 +1,30 @@
+- name: nginx ssl certificate is present
+  copy:
+    src: "{{ item }}"
+    dest: /etc/nginx/ssl/
+  with_items:
+    - certs/origin.cert
+    - certs/origin.key
+  notify:
+    - reload nginx
+
+- name: nginx ssl reverse proxy is configured
+  copy:
+    src: nginx-https-reverse-proxy.conf
+    dest: /etc/nginx/conf.d/00-https-reverse-proxy.conf
+  notify:
+    - reload nginx
+
+- name: nginx default vhost is blocked
+  copy:
+    src: nginx-default-vhost.conf
+    dest: /etc/nginx/conf.d/00-default-vhost.conf
+  notify:
+    - reload nginx
+
+- name: nginx default site is disabled
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify:
+    - reload nginx

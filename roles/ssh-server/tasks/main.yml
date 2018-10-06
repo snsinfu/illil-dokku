@@ -1,0 +1,6 @@
+- name: sshd is configured
+  template:
+    src: config/sshd_config.j2
+    dest: /etc/ssh/sshd_config
+  notify:
+    - restart sshd

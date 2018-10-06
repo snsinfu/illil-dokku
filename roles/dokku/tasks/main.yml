@@ -1,0 +1,49 @@
+- name: packagecloud repository key is registered
+  apt_key:
+    id: 418a7f2fb0e1e6e7eabf6fe8c2e73424d59097ab
+    url: https://packagecloud.io/gpg.key
+    state: present
+
+- name: dokku repository is registered
+  apt_repository:
+    repo: deb https://packagecloud.io/dokku/dokku/debian/ {{ ansible_lsb.codename }} main
+    state: present
+
+- name: dokku web configuration is disabled
+  debconf:
+    name: dokku
+    question: dokku/web_config
+    vtype: boolean
+    value: false
+
+- name: dokku is configured to use vhost
+  debconf:
+    name: dokku
+    question: dokku/vhost_enable
+    vtype: boolean
+    value: true
+
+- name: dokku host is set
+  debconf:
+    name: dokku
+    question: dokku/hostname
+    vtype: string
+    value: "{{ dokku_host }}"
+
+- name: dokku primary ssh key is copied from authorized_keys
+  shell: head -n1 /root/.ssh/authorized_keys > /root/.ssh/id_rsa.pub
+  args:
+    creates: /root/.ssh/id_rsa.pub
+
+- name: dokku is installed
+  apt:
+    name: dokku
+    state: present
+
+- name: dokku plugins are installed
+  command: dokku plugin:install "{{ item.url }}" "{{ item.name }}"
+  args:
+    creates: "/var/lib/dokku/plugins/available/{{ item.name }}"
+  with_items:
+    - { url: "https://github.com/dokku/dokku-letsencrypt.git", name: letsencrypt }
+    - { url: "https://github.com/dokku/dokku-postgres.git", name: postgres }

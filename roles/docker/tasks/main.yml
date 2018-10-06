@@ -1,0 +1,23 @@
+# https://docs.docker.com/install/linux/docker-ce/debian/
+
+- name: docker repository key is registered
+  apt_key:
+    id: 9dc858229fc7dd38854ae2d88d81803c0ebfcd88
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+
+- name: docker repository is registered
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_lsb.codename }} stable
+    state: present
+
+- name: docker is installed
+  apt:
+    name: docker-ce
+    state: present
+
+- name: docker is activated
+  service:
+    name: docker
+    state: started
+    enabled: yes

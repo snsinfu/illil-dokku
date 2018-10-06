@@ -1,0 +1,25 @@
+- hosts: dokku
+  roles:
+    - role: hostname
+      tags: ["hostname"]
+
+    - role: packages
+      tags: ["packages"]
+
+    - role: firewall
+      tags: ["firewall"]
+
+    - role: ssh-server
+      tags: ["ssh"]
+
+    - role: docker
+      tags: ["docker"]
+
+    - role: dokku
+      tags: ["dokku"]
+
+    - role: nginx
+      tags: ["nginx"]
+
+    - role: mackerel
+      tags: ["mackerel"]
